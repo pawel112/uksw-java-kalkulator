@@ -3,6 +3,8 @@ package kalkulator;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import org.apache.commons.lang3.StringUtils;
 
@@ -31,43 +33,63 @@ public class kalkulator {
 		
 		String[] operatory = wejscie.split("[0-9]{1,}");
 		String[] liczby = wejscie.split("[+-//*/]");
-		double wynik = Double.parseDouble(liczby[0]);
-		int licznik = 0;
 		
-		for (int i=1; i<liczby.length; i++)
+		List<Double> lista_liczb = new ArrayList<>();
+		List<String> lista_operatorow = new ArrayList<String>();
+		
+		for (int i=0; i<liczby.length; i++)
 		{
 			if (liczby[i].trim().isEmpty() == false)
 			{
-				for (int j=0; j<1; )
-				{
-					if (operatory[licznik].trim().isEmpty() == false)
-					{
-						switch (operatory[licznik].trim())
-						{
-						case "+":
-							wynik += Double.parseDouble(liczby[i]);
-							break;
-						case "-":
-							wynik -= Double.parseDouble(liczby[i]);
-							break;
-						case "*":
-							wynik *= Double.parseDouble(liczby[i]);
-							break;
-						case "/":
-							wynik /= Double.parseDouble(liczby[i]);
-							break;
-						}
-						j++;
-						licznik++;
-					}
-					else
-					{
-						licznik++;
-					}
-				}
-				
+				lista_liczb.add(Double.parseDouble(liczby[i].trim()));
 			}
 		}
+		
+		for (int i=0; i<operatory.length; i++)
+		{
+			if (operatory[i].trim().isEmpty() == false)
+			{
+				lista_operatorow.add(operatory[i].trim());
+			}
+		}
+		
+		for (int i=0; i<lista_operatorow.size(); i++)
+		{
+			if (lista_operatorow.get(i).equals("*") == true)
+			{
+				lista_liczb.set(i, lista_liczb.get(i) * lista_liczb.get(i+1));
+				lista_liczb.remove(i+1);
+				lista_operatorow.remove(i);
+				i--;
+			}
+			else if (lista_operatorow.get(i).equals("/") == true)
+			{
+				lista_liczb.set(i, lista_liczb.get(i) / lista_liczb.get(i+1));
+				lista_liczb.remove(i+1);
+				lista_operatorow.remove(i);
+				i--;
+			}
+		}
+		
+		for (int i=0; i<lista_operatorow.size(); i++)
+		{
+			if (lista_operatorow.get(i).equals("+") == true)
+			{
+				lista_liczb.set(i, lista_liczb.get(i) + lista_liczb.get(i+1));
+				lista_liczb.remove(i+1);
+				lista_operatorow.remove(i);
+				i--;
+			}
+			else if (lista_operatorow.get(i).equals("-") == true)
+			{
+				lista_liczb.set(i, lista_liczb.get(i) - lista_liczb.get(i+1));
+				lista_liczb.remove(i+1);
+				lista_operatorow.remove(i);
+				i--;
+			}
+		}
+		
+		double wynik = lista_liczb.get(0);
 		System.out.println(wejscie+" = "+wynik);
 	}
 	
